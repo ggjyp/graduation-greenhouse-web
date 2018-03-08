@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jyp.greenhouse.core.mapper.AdminMapper" >
+  <resultMap id="BaseResultMap" type="com.jyp.greenhouse.core.entity.Admin" >
+    <id column="admin_id" property="adminId" jdbcType="VARCHAR" />
+    <result column="admin_name" property="adminName" jdbcType="VARCHAR" />
+    <result column="admin_password" property="adminPassword" jdbcType="CHAR" />
+    <result column="admin_state" property="adminState" jdbcType="TINYINT" />
+    <result column="admin_image" property="adminImage" jdbcType="VARCHAR" />
+    <result column="admin_prelogintime" property="adminPrelogintime" jdbcType="INTEGER" />
+    <result column="admin_preloginip" property="adminPreloginip" jdbcType="VARCHAR" />
+    <result column="admin_lastlogintime" property="adminLastlogintime" jdbcType="INTEGER" />
+    <result column="admin_lastloginip" property="adminLastloginip" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    admin_id, admin_name, admin_password, admin_state, admin_image, admin_prelogintime, admin_preloginip,
+    admin_lastlogintime, admin_lastloginip
+  </sql>
+  <insert id="insert" parameterType="com.jyp.greenhouse.core.entity.Admin" >
+    insert into admin
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="adminId != null" >
+        admin_id,
+      </if>
+      <if test="adminName != null" >
+        admin_name,
+      </if>
+      <if test="adminPassword != null" >
+        admin_password,
+      </if>
+      <if test="adminState != null" >
+        admin_state,
+      </if>
+      <if test="adminImage != null" >
+        admin_image,
+      </if>
+      <if test="adminPrelogintime != null" >
+        admin_prelogintime,
+      </if>
+      <if test="adminPreloginip != null" >
+        admin_preloginip,
+      </if>
+      <if test="adminLastlogintime != null" >
+        admin_lastlogintime,
+      </if>
+      <if test="adminLastloginip != null" >
+        admin_lastloginip,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="adminId != null" >
+        #{adminId,jdbcType=VARCHAR},
+      </if>
+      <if test="adminName != null" >
+        #{adminName,jdbcType=VARCHAR},
+      </if>
+      <if test="adminPassword != null" >
+        #{adminPassword,jdbcType=CHAR},
+      </if>
+      <if test="adminState != null" >
+        #{adminState,jdbcType=TINYINT},
+      </if>
+      <if test="adminImage != null" >
+        #{adminImage,jdbcType=VARCHAR},
+      </if>
+      <if test="adminPrelogintime != null" >
+        #{adminPrelogintime,jdbcType=INTEGER},
+      </if>
+      <if test="adminPreloginip != null" >
+        #{adminPreloginip,jdbcType=VARCHAR},
+      </if>
+      <if test="adminLastlogintime != null" >
+        #{adminLastlogintime,jdbcType=INTEGER},
+      </if>
+      <if test="adminLastloginip != null" >
+        #{adminLastloginip,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from admin
+    where admin_id = #{adminId,jdbcType=VARCHAR}
+  </delete>
+  <update id="update" parameterType="com.jyp.greenhouse.core.entity.Admin" >
+    update admin
+    <set >
+      <if test="adminPassword != null" >
+        admin_password = #{adminPassword,jdbcType=CHAR},
+      </if>
+      <if test="adminName != null" >
+        admin_name = #{adminName,jdbcType=VARCHAR},
+      </if>
+      <if test="adminState != null" >
+        admin_state = #{adminState,jdbcType=TINYINT},
+      </if>
+      <if test="adminImage != null" >
+        admin_image = #{adminImage,jdbcType=VARCHAR},
+      </if>
+      <if test="adminPrelogintime != null" >
+        admin_prelogintime = #{adminPrelogintime,jdbcType=INTEGER},
+      </if>
+      <if test="adminPreloginip != null" >
+        admin_preloginip = #{adminPreloginip,jdbcType=VARCHAR},
+      </if>
+      <if test="adminLastlogintime != null" >
+        admin_lastlogintime = #{adminLastlogintime,jdbcType=INTEGER},
+      </if>
+      <if test="adminLastloginip != null" >
+        admin_lastloginip = #{adminLastloginip,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where admin_id = #{adminId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateLogininfo" parameterType="com.jyp.greenhouse.core.entity.Admin">
+    update admin
+    set
+    admin_prelogintime = #{adminPrelogintime,jdbcType=INTEGER},
+    admin_preloginip = #{adminPreloginip,jdbcType=VARCHAR},
+    admin_lastloginip = #{adminLastloginip,jdbcType=VARCHAR},
+    admin_lastlogintime = #{adminLastlogintime,jdbcType=INTEGER}
+    where admin_id = #{adminId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from admin
+    where admin_id = #{adminId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List"/>
+    from admin
+    where admin_name = #{adminName,jdbcType=VARCHAR}
+  </select>
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from admin
+    where 1
+  </select>
+  <select id="login" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List"/>
+    from admin
+    where admin_name = #{adminName,jdbcType=VARCHAR} and admin_password=#{adminPassword,jdbcType=VARCHAR}
+  </select>
+
+
+</mapper>

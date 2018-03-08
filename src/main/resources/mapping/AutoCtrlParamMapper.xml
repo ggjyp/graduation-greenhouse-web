@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jyp.greenhouse.core.mapper.AutoCtrlParamMapper" >
+  <resultMap id="BaseResultMap" type="com.jyp.greenhouse.core.entity.AutoCtrlParam" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="param_name" property="paramName" jdbcType="VARCHAR" />
+    <result column="temperature_min" property="temperatureMin" jdbcType="REAL" />
+    <result column="temperature_max" property="temperatureMax" jdbcType="REAL" />
+    <result column="humidity_min" property="humidityMin" jdbcType="REAL" />
+    <result column="humidity_max" property="humidityMax" jdbcType="REAL" />
+    <result column="light_intensity_min" property="lightIntensityMin" jdbcType="REAL" />
+    <result column="light_intensity_max" property="lightIntensityMax" jdbcType="REAL" />
+    <result column="soil_moisture_min" property="soilMoistureMin" jdbcType="REAL" />
+    <result column="soil_moisture_max" property="soilMoistureMax" jdbcType="REAL" />
+    <result column="create_date" property="createDate" jdbcType="INTEGER" />
+    <result column="delete_date" property="deleteDate" jdbcType="INTEGER" />
+    <result column="modify_date" property="modifyDate" jdbcType="INTEGER" />
+    <result column="isusing" property="isUsing" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, param_name, temperature_min, temperature_max, humidity_min, humidity_max, light_intensity_min, 
+    light_intensity_max, soil_moisture_min, soil_moisture_max, create_date, delete_date, 
+    modify_date,isusing
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from auto_ctrl_param
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from auto_ctrl_param
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jyp.greenhouse.core.entity.AutoCtrlParam" >
+    insert into auto_ctrl_param (param_name, temperature_min,
+      temperature_max, humidity_min, humidity_max, 
+      light_intensity_min, light_intensity_max, soil_moisture_min, 
+      soil_moisture_max, create_date)
+    values (#{paramName,jdbcType=VARCHAR}, #{temperatureMin,jdbcType=REAL},
+      #{temperatureMax,jdbcType=REAL}, #{humidityMin,jdbcType=REAL}, #{humidityMax,jdbcType=REAL}, 
+      #{lightIntensityMin,jdbcType=REAL}, #{lightIntensityMax,jdbcType=REAL}, #{soilMoistureMin,jdbcType=REAL}, 
+      #{soilMoistureMax,jdbcType=REAL}, #{createDate,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jyp.greenhouse.core.entity.AutoCtrlParam" >
+    update auto_ctrl_param
+    <set >
+      <if test="paramName != null" >
+        param_name = #{paramName,jdbcType=VARCHAR},
+      </if>
+      <if test="temperatureMin != null" >
+        temperature_min = #{temperatureMin,jdbcType=REAL},
+      </if>
+      <if test="temperatureMax != null" >
+        temperature_max = #{temperatureMax,jdbcType=REAL},
+      </if>
+      <if test="humidityMin != null" >
+        humidity_min = #{humidityMin,jdbcType=REAL},
+      </if>
+      <if test="humidityMax != null" >
+        humidity_max = #{humidityMax,jdbcType=REAL},
+      </if>
+      <if test="lightIntensityMin != null" >
+        light_intensity_min = #{lightIntensityMin,jdbcType=REAL},
+      </if>
+      <if test="lightIntensityMax != null" >
+        light_intensity_max = #{lightIntensityMax,jdbcType=REAL},
+      </if>
+      <if test="soilMoistureMin != null" >
+        soil_moisture_min = #{soilMoistureMin,jdbcType=REAL},
+      </if>
+      <if test="soilMoistureMax != null" >
+        soil_moisture_max = #{soilMoistureMax,jdbcType=REAL},
+      </if>
+      <if test="modifyDate != null" >
+        modify_date = #{modifyDate,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="toUsing">
+    update auto_ctrl_param
+    set  modify_date = #{modifyDate,jdbcType=INTEGER},
+    isusing = 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="toUnUsing">
+    update auto_ctrl_param
+    set
+    isusing = 0
+  </update>
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from auto_ctrl_param
+    <where>
+      <if test="paramName!=null">
+        param_name like concat(concat('%',#{paramName}),'%')
+      </if>
+    </where>
+    order by id asc        <if test="limit>0">                 limit #{offset},#{limit}             </if>
+  </select>
+
+  <select id="count" resultType="int">
+    select
+    count(1) as c
+    from auto_ctrl_param
+    <where>
+      <if test="paramName!=null">
+        param_name like concat(concat('%',#{paramName}),'%')
+      </if>
+    </where>
+  </select>
+</mapper>

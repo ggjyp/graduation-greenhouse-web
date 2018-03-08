@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       	http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!-- 静态资源(js、image等)的访问 -->
+    <mvc:default-servlet-handler/>
+
+    <bean id="objectMapper" class="com.jyp.greenhouse.core.plugin.jackson.CustomObjectMapper" init-method="init">
+        <!-- 驼峰转为下划线 -->
+        <property name="camelCaseToLowerCaseWithUnderscores" value="false"/>
+        <property name="dateFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
+    </bean>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" >
+                <property name="objectMapper" ref="objectMapper"/>
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!-- 设置使用注解的类所在的jar包 -->
+    <!-- 扫描插件,redis,cache,jsonp,aop -->
+    <context:component-scan base-package="com.jyp.greenhouse.core.plugin"/>
+    <context:component-scan base-package="com.jyp.greenhouse.web.backend.controller"/>
+    <context:component-scan base-package="com.jyp.greenhouse.web.frontend.controller"/>
+    <!-- 启用spring mvc 注解 -->
+    <context:annotation-config/>
+    <!-- 定义JSP视图解析器-->
+    <bean id="viewResolverCommon" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"></property>
+        <property name="suffix" value=".jsp"/>
+        <!--<property name="viewNames" value="jsp/*"/>-->
+        <property name="order" value="1"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+    </bean>
+
+
+    <!-- id="multipartResolver"必须是multipartResolver -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- maxUploadSize:文件上传的最大值以byte为单位 -->
+        <property name="maxUploadSize" value="102400000"></property>
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+
+    <!--管理员拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/admin/**"/>
+            <mvc:exclude-mapping path="/admin/login"/>
+            <mvc:exclude-mapping path="/admin/logout"/>
+            <mvc:exclude-mapping path="/admin/notpermit"/>
+            <bean id="adminloginInterceptor" class="com.jyp.greenhouse.web.interceptor.AdminLoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    <!--ACL拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/admin/**"/>
+            <bean id="aclInterceptor" class="com.jyp.greenhouse.web.interceptor.ACLInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+
+</beans>

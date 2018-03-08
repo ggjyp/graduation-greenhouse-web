@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jyp.greenhouse.core.mapper.LogMapper" >
+  <resultMap id="BaseResultMap" type="com.jyp.greenhouse.core.entity.Log" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="operate_from" property="operateFrom" jdbcType="VARCHAR" />
+    <result column="operate_to" property="operateTo" jdbcType="VARCHAR" />
+    <result column="operate_time" property="operateTime" jdbcType="INTEGER" />
+    <result column="behavior" property="behavior" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, operate_from, operate_to, operate_time, behavior
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jyp.greenhouse.core.entity.Log" >
+    insert into log (operate_from, operate_to,
+      operate_time, behavior)
+    values (#{operateFrom,jdbcType=VARCHAR}, #{operateTo,jdbcType=VARCHAR},
+      #{operateTime,jdbcType=INTEGER}, #{behavior,jdbcType=VARCHAR})
+  </insert>
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from log
+    <where>
+      <if test="operateFrom!=null">
+        AND operate_from like concat(concat('%',#{operateFrom}),'%')
+      </if>
+      <if test="operateTo!=null">
+        AND operate_to like concat(concat('%',#{operateTo}),'%')
+      </if>
+      <if test="starttime>0">
+        AND operate_time &gt;= #{starttime}
+      </if>
+      <if test="endtime>0">
+        AND operate_time &lt;= #{endtime}
+      </if>
+    </where>
+    order by operate_time desc        <if test="limit>0">                 limit #{offset},#{limit}             </if>
+  </select>
+
+  <select id="count" resultType="int">
+    select
+    count(1) as c
+    from log
+    <where>
+      <if test="operateFrom!=null">
+        AND operate_from like concat(concat('%',#{operateFrom}),'%')
+      </if>
+      <if test="operateTo!=null">
+        AND operate_to like concat(concat('%',#{operateTo}),'%')
+      </if>
+      <if test="starttime>0">
+        AND operate_time &gt;= #{starttime}
+      </if>
+      <if test="endtime>0">
+        AND operate_time &lt;= #{endtime}
+      </if>
+    </where>
+  </select>
+</mapper>
